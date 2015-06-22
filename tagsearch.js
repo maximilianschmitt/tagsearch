@@ -31,22 +31,23 @@ const tagsearch = function(tags) {
         // remove overlapped matches
         .filter(match => match.start < match.end);
 
-      const firstPart = string.substr(0, matches[0].start);
-      const lastPart = string.substr(matches[matches.length - 1].end);
-      const partsInBetween = [];
 
       wrap = wrap || function wrap(match) {
         return '<strong>' + match.original + '</strong>';
       };
 
-      matches.forEach((match, i) => {
+      const firstPart = string.substr(0, matches[0].start);
+      const lastPart = string.substr(matches[matches.length - 1].end);
+      const partsInBetween = flatten(matches.map((match, i) => {
+        const wrapped = wrap(match);
+
         if (i > 0) {
           const prev = matches[i - 1];
-          partsInBetween.push(string.substr(prev.end, match.start - prev.end));
+          return [string.substr(prev.end, match.start - prev.end), wrapped];
         }
 
-        partsInBetween.push(wrap(match));
-      });
+        return wrapped;
+      }));
 
       return [firstPart].concat(partsInBetween).concat(lastPart).join('');
     }
