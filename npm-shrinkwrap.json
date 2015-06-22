@@ -1,6 +1,6 @@
 {
   "name": "tagsearch",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "dependencies": {
     "array-uniq": {
       "version": "1.0.2",
