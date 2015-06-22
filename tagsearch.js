@@ -31,6 +31,9 @@ const tagsearch = function(tags) {
         // remove overlapped matches
         .filter(match => match.start < match.end);
 
+      if (!matches.length) {
+        return string;
+      }
 
       wrap = wrap || function wrap(match) {
         return '<strong>' + match.original + '</strong>';

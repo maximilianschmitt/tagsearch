@@ -24,6 +24,12 @@ describe('tagsearch', function() {
       ]);
     });
 
+    it('returns an empty array if no matches were found', function() {
+      const t = tagsearch(['slim', 'shady']);
+
+      expect(t.matches('i am eminem')).to.deep.equal([]);
+    });
+
     it('is not case-sensitive', function() {
       const t = tagsearch(['slim', 'shady']);
 
@@ -71,6 +77,13 @@ describe('tagsearch', function() {
       const h = t.highlight('i am the real slim shady', () => 'beep');
 
       expect(h).to.equal('i am the real beep beep');
+    });
+
+    it('replaces nothing if no tags match', function() {
+      const t = tagsearch(['slim', 'shady']);
+      const h = t.highlight('i am eminem', () => 'beep');
+
+      expect(h).to.equal('i am eminem');
     });
 
     it('compensates for overlapping results', function() {

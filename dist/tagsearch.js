@@ -36,6 +36,10 @@ var tagsearch = function tagsearch(tags) {
         return match.start < match.end;
       });
 
+      if (!matches.length) {
+        return string;
+      }
+
       wrap = wrap || function wrap(match) {
         return '<strong>' + match.original + '</strong>';
       };
