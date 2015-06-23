@@ -6,10 +6,23 @@ var flatten = require('flatten');
 var uniq = require('array-uniq');
 
 var tagsearch = function tagsearch(tags) {
-  tags = uniq(tags);
+  tags = uniq(tags).map(function (tag) {
+    return tag.replace(/[\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  });
 
   var t = {
     tags: tags,
+
+    exec: function exec(input) {
+      var matches = t.matches(input);
+
+      return {
+        tags: tags,
+        matches: matches,
+        highlight: t.highlight.bind(null, input, matches)
+      };
+    },
+
     matches: function matches(input) {
       return flatten(tags.map(matchesForTag)).sort(function (m1, m2) {
         return m1.start - m2.start;
@@ -25,8 +38,9 @@ var tagsearch = function tagsearch(tags) {
         });
       }
     },
+
     highlight: function highlight(string, wrap) {
-      var matches = t.matches(string)
+      var matches = Array.isArray(wrap) ? wrap : t.matches(string)
       // remove overlaps
       .map(function (match, i, arr) {
         return i > 0 ? assign({}, match, { start: Math.max(arr[i - 1].end, match.start) }) : match;
@@ -38,6 +52,10 @@ var tagsearch = function tagsearch(tags) {
 
       if (!matches.length) {
         return string;
+      }
+
+      if (Array.isArray(wrap)) {
+        wrap = arguments[2];
       }
 
       wrap = wrap || function wrap(match) {
