@@ -40,9 +40,7 @@ var tagsearch = function tagsearch(tags) {
     },
 
     highlight: function highlight(string, wrap) {
-      var matches = Array.isArray(wrap) ? wrap : t.matches(string)
-      // remove overlaps
-      .map(function (match, i, arr) {
+      var matches = (Array.isArray(wrap) ? wrap : t.matches(string)).map(function (match, i, arr) {
         return i > 0 ? assign({}, match, { start: Math.max(arr[i - 1].end, match.start) }) : match;
       })
       // remove overlapped matches
@@ -83,3 +81,5 @@ var tagsearch = function tagsearch(tags) {
 };
 
 module.exports = tagsearch;
+
+// remove overlaps
