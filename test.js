@@ -39,6 +39,12 @@ describe('tagsearch', function() {
       ]);
     });
 
+    it('does not allow regular expressions', function() {
+      const t = tagsearch(['.*', '\w']);
+
+      expect(t.matches('i am the real slim shady')).to.have.lengthOf(0);
+    });
+
     it('finds all matches', function() {
       const t = tagsearch(['slim', 'shady']);
 
@@ -68,6 +74,29 @@ describe('tagsearch', function() {
       expect(matches).to.deep.include({ start: 0, end: 2, tag: 'sh', original: 'sh' });
       expect(matches).to.deep.include({ start: 3, end: 5, tag: 'sh', original: 'sh' });
       expect(matches).to.deep.include({ start: 6, end: 8, tag: 'sh', original: 'sh' });
+    });
+  });
+
+  describe('exec', function() {
+    it('returns an object with a partially-applied highlight function', function() {
+      const t = tagsearch(['slim', 'shady']).exec('i am the real slim shady');
+
+      expect(t.highlight(() => 'beep')).to.equal('i am the real beep beep');
+    });
+
+    it('returns an object with all tags', function() {
+      const t = tagsearch(['slim', 'shady']).exec('i am the real slim shady');
+
+      expect(t.tags).to.deep.equal(['slim', 'shady']);
+    });
+
+    it('returns an object with all matches', function() {
+      const t = tagsearch(['slim', 'shady']).exec('i am the real slim shady');
+
+      expect(t.matches).to.deep.equal([
+        { start: 14, end: 18, tag: 'slim', original: 'slim' },
+        { start: 19, end: 24, tag: 'shady', original: 'shady' }
+      ]);
     });
   });
 
