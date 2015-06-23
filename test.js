@@ -84,6 +84,12 @@ describe('tagsearch', function() {
       expect(t.highlight(() => 'beep')).to.equal('i am the real beep beep');
     });
 
+    it('returns an object with a partially-applied highlight function that is also resiliant against duplicates', function() {
+      const t = tagsearch(['slim shady', 'shady']).exec('i am the real slim shady');
+
+      expect(t.highlight()).to.equal('i am the real <strong>slim shady</strong>');
+    });
+
     it('returns an object with all tags', function() {
       const t = tagsearch(['slim', 'shady']).exec('i am the real slim shady');
 
@@ -120,6 +126,13 @@ describe('tagsearch', function() {
       const h = t.highlight('i am the real slim shady', () => 'beep');
 
       expect(h).to.equal('i am the real beep beep');
+    });
+
+    it('compensates for duplicate matches', function() {
+      const t = tagsearch(['developer', 'devel']);
+      const h = t.highlight('(Online) Web developer & designer for a complex WordPress PHP project');
+
+      expect(h).to.equal('(Online) Web <strong>developer</strong> & designer for a complex WordPress PHP project');
     });
 
     it('passes each match to the wrapping function', function() {

@@ -37,7 +37,7 @@ const tagsearch = function(tags) {
     },
 
     highlight(string, wrap) {
-      const matches = Array.isArray(wrap) ? wrap : t.matches(string)
+      const matches = (Array.isArray(wrap) ? wrap : t.matches(string))
         // remove overlaps
         .map((match, i, arr) => i > 0 ? assign({}, match, { start: Math.max(arr[i - 1].end, match.start) }) : match)
         // remove overlapped matches
